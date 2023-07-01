@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>olive</title>
+    <style>
+        body{
+            background-image: url('background.jpg');
+            background-color: rgba(0, 0, 0, 0.1);
+            
+        }
+        .container{
+            padding: 20px;
+            border: 2px solid crimson;
+            width: 900px;
+            margin: 10px auto;
+            background-color: #ddd;
+            box-shadow: rgba(245, 5, 5, 0.941) 0px 5px 15px;
+        }
+        .logo{
+            color: #0444FC;
+            font-size: 30px;
+            font-weight: 600;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        hr{
+            border: 2px solid black;
+        }
+       
+        #bottles{
+            outline: none;
+            border: 1px solid greenyellow;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 8px;
+        }
+        #shipping{
+            color: crimson;
+        }
+        #tax{
+            color: deeppink;
+        }
+        #amount{
+            color: rgb(255, 98, 0);
+        }
+        select{
+            padding: 8px 12px;
+            border: 1px solid greenyellow;
+        }
+        #submitBtn{
+            padding: 10px 20px;
+            border-radius: 10px;
+            outline: none;
+            border: none;
+            background-color: darkcyan;
+            color: white;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">Kibigo's Olive Oil</h1>
+        <hr>
+        <form action="" method="post">
+
+            <input type="radio" name="oil" value="premium" > Premium Olive Oil <br><br>
+            <input type="radio" name="oil" value="special"> Special Olive Oil <br><br>
+            <input type="radio" name="oil" value="regular"> Regular Olive Oil
+
+            <h3>Enter the number of bottles</h3>
+            <input type="number" name="bottles" id="bottles">
+            
+            <br><br>
+
+            <select name="location" id="location">
+                <option value="">Select</option>
+                <option value="nairobi">Nairobi</option>
+                <option value="mombasa">Mombasa</option>
+                <option value="others">Others</option>
+            </select>
+            <br><br>
+            
+            <input type="submit" id="submitBtn" value="Total Amount">
+        </form>
+
+
+        <h2>Shipping Fee: <span id="shipping"></span></h2>
+        <h2>Tax: Ksh <span id="tax"></span></h2>
+        <h2>Total amount: Ksh <span id="amount"></span></h2>
+        
+        <script>
+            //kibigos products prices
+            
+            const PREMIUM = 500;
+            const SPECIAL = 200;
+            const REGULAR = 100;
+
+            // VAT
+            const TAX = 0.1;
+
+            //destinations and their shipping fee
+            const SHIPPING_FEE = {
+                nairobi:'FREE',
+                mombasa:50,
+                others:60
+            }
+
+            //shipping logic
+            var Shippinglocation = document.getElementById('location');
+
+            var shipping_fee;
+            var selectedLocation;
+            Shippinglocation.addEventListener('change', function(){
+                selectedLocation = this.value;
+                console.log("SELECTED LOCATION: " + selectedLocation);
+                // var shipping_fee;
+                if(selectedLocation === 'nairobi'){
+                    shipping_fee = SHIPPING_FEE[selectedLocation]
+                } else if(selectedLocation === 'mombasa'){
+                    shipping_fee = SHIPPING_FEE[selectedLocation]
+                } else if(selectedLocation === 'others'){
+                    shipping_fee = SHIPPING_FEE[selectedLocation]
+                }
+                console.log("Your shipping fee is: " + shipping_fee);
+                document.getElementById('shipping').textContent = shipping_fee;
+            })
+
+        
+            
+            //function to calculate the total amount
+            function CalculateTotalAmount(){
+
+                var radioButtons = document.querySelector('input[type="radio"]:checked');
+
+                if(!radioButtons){
+                    alert("Please select something");
+                    return;
+                }
+
+                var selectedValue = radioButtons.value;
+
+                //number of bottles
+                var bottlesInput = document.getElementById('bottles');
+                const NUM_BOTTLES = bottlesInput.value;
+                console.log("Number of bottles" + NUM_BOTTLES)
+                console.log("Selected brand: " + selectedValue);
+
+                if(NUM_BOTTLES < 1){
+                    alert("Please enter a valid input of the number of bottles");
+                    return;
+                    
+                }
+
+                if(Shippinglocation === ""){
+                    alert("Please enter a shipping location");
+                    return;
+                    
+                }
+
+                
+                //calculations
+                var totalAmount;
+                if(selectedValue==='premium'){
+                    totalAmount = (PREMIUM*NUM_BOTTLES) + (PREMIUM*NUM_BOTTLES) * TAX; 
+                } else if(selectedValue==='special'){
+                    totalAmount = (SPECIAL*NUM_BOTTLES) + (SPECIAL*NUM_BOTTLES) * TAX; 
+                } else if(selectedValue==='regular'){
+                    totalAmount = (REGULAR*NUM_BOTTLES) + (REGULAR*NUM_BOTTLES) * TAX;
+                }
+
+                //displaying the calculations to my user
+                document.getElementById('tax').textContent = totalAmount - (totalAmount / (1 + TAX)).toFixed(0);
+                document.getElementById('amount').textContent = totalAmount;
+                console.log("Total Amount" + totalAmount);
+                
+            }
+
+            var submitButton = document.getElementById('submitBtn');
+            function handleFormSubmit(e){
+                e.preventDefault();
+                CalculateTotalAmount();
+                
+            }
+
+            submitButton.addEventListener('click', handleFormSubmit);
+            
+        </script>
+    </div>    
+</body>
+</html>
